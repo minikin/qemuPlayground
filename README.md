@@ -3,7 +3,8 @@
 #### Install Sourcery CodeBench Lite 2013.11-24 for ARM EABI
 
 Download Sourcery CodeBench Lite:
-https://sourcery.mentor.com/GNUToolchain/release2635
+
+https://sourcery.mentor.com/GNUToolchain/package12192/public/arm-none-eabi/arm-2013.11-24-arm-none-eabi.bin
 
 Install dependency:
 
@@ -12,17 +13,18 @@ lib32stdc++6 libxt6:i386 libdbus-glib-1-2:i386 libasound2:i386`
 
 Make file executable:
 
-`chmod +x file-name.run`
+`chmod +x arm-2013.11-24-arm-none-eabi.bin`
 
 Run program:
 
-`sudo ./file-name.run`
+`sudo ./arm-2013.11-24-arm-none-eabi.bin`
 
 #### Install QEMU:
 
 `sudo apt-get install qemu`
 
-Check if QEMU works (get a list of all supported machines):  
+Check if QEMU works (get a list of all supported machines):
+
 `qemu-system-arm -machine help`
 
 #### Build freeRTOS with MQTT example:
