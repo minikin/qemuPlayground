@@ -28,3 +28,5 @@ Check if QEMU works (get a list of all supported machines):
 `qemu-system-arm -machine help`
 
 #### Build freeRTOS with MQTT example:
+
+`make -f Makefile.qemu`
