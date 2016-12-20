@@ -30,3 +30,15 @@ Check if QEMU works (get a list of all supported machines):
 #### Build freeRTOS with MQTT example:
 
 `make -f Makefile.qemu`
+
+#### Run
+
+To run the target image in Qemu, enter the following command:
+
+`qemu-system-arm -M versatilepb -nographic -m 128 -kernel image.bin`
+
+A convenience Bash script _start_qemu.sh_ is provided. If necessary, you may edit it and adjust paths to Qemu and/or target image.
+
+The demo application will run infinitely so it must be stopped manually by "killing" the instance of Qemu (an "equivalent" to switching off the board). A convenience Bash script _stop_qemu.sh_ (it must be run in another shell) is provided to automate the process. Note that it may not work properly if multiple instances of qemu-system-arm are running.
+
+For more details, see extensive comments in both scripts.
