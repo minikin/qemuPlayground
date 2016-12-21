@@ -17,7 +17,6 @@
 
 #include "MQTTFreeRTOS.h"
 
-
 int ThreadStart(Thread* thread, void (*fn)(void*), void* arg)
 {
 	int rc = 0;
@@ -58,13 +57,13 @@ void TimerCountdownMS(Timer* timer, unsigned int timeout_ms)
 }
 
 
-void TimerCountdown(Timer* timer, unsigned int timeout) 
+void TimerCountdown(Timer* timer, unsigned int timeout)
 {
 	TimerCountdownMS(timer, timeout * 1000);
 }
 
 
-int TimerLeftMS(Timer* timer) 
+int TimerLeftMS(Timer* timer)
 {
 	xTaskCheckForTimeOut(&timer->xTimeOut, &timer->xTicksToWait); /* updates xTicksToWait to the number left */
 	return (timer->xTicksToWait < 0) ? 0 : (timer->xTicksToWait * portTICK_PERIOD_MS);
