@@ -15,7 +15,7 @@ Make file executable:
 
 `chmod +x arm-2013.11-24-arm-none-eabi.bin`
 
-Run program:
+Run:
 
 `sudo ./arm-2013.11-24-arm-none-eabi.bin`
 
@@ -27,11 +27,20 @@ Check if QEMU works (get a list of all supported machines):
 
 `qemu-system-arm -machine help`
 
-#### Build freeRTOS with MQTT example:
+#### Build & Run freeRTOS with MQTT example:
 
-`make -f Makefile.qemu`
+Build:
 
-#### Run
+A convenience Bash script setenv.sh is provided to set paths to toolchain's commands and libraries.
+You may edit it and adjust the paths according to your setup. To set up the necessary paths, simply type:
+
+`. ./setenv.sh`
+
+If you wish to run the image anywhere else except in Qemu, you will probably have to edit the linker script qemu.ld and adjust the startup address properly.
+
+To build the image with the test application, just run `make Makefile` or `make rebuild Makefile`. If the build process is successful, the image file `image.bin` will be ready to boot.
+
+Run:
 
 To run the target image in Qemu, enter the following command:
 
