@@ -40,7 +40,7 @@ FREERTOS_PORT_SRC = $(FREERTOS_SRC)portable/$(PORT_COMP_TARG)
 DRIVERS_SRC = drivers/
 
 # Directory with demo specific source (and header) files
-APP_SRC = Example/
+APP_SRC = Demo/
 
 # Object files to be linked into an application
 # Due to a large number, the .o files are arranged into logical groups:
@@ -155,28 +155,28 @@ $(OBJDIR)arp.o : $(FREERTOS_SRC)FreeRTOS_ARP.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)iptrace.o : $(FREERTOS_SRC)DemoIPTrace.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)dhcp.o : $(FREERTOS_SRC)FreeRTOS_DHCP.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)dns.o : $(FREERTOS_SRC)FreeRTOS_DNS.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)ip.o : $(FREERTOS_SRC)FreeRTOS_IP.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)sockets.o : $(FREERTOS_SRC)FreeRTOS_SocketsP.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)stream_buffer.o : $(FREERTOS_SRC)FreeRTOS_Stream_Buffer.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)tcp_ip.o : $(FREERTOS_SRC)FreeRTOS_TCP_IP.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)udp_ip.o : $(FREERTOS_SRC)FreeRTOS_UDP_IP.c
-$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)mqtt.o : $(FREERTOS_SRC)MQTTFreeRTOS.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
