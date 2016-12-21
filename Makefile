@@ -180,7 +180,7 @@ $(OBJDIR)uart.o : $(DRIVERS_SRC)uart.c $(DEP_BSP)
 
 # Demo application
 
-$(OBJDIR)main.o : $(APP_SRC)main.c
+$(OBJDIR)main.o : $(APP_SRC)MQTTEcho.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)init.o : $(APP_SRC)init.c $(DEP_BSP)
