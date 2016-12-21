@@ -38,7 +38,7 @@ You may edit it and adjust the paths according to your setup. To set up the nece
 
 If you wish to run the image anywhere else except in Qemu, you will probably have to edit the linker script qemu.ld and adjust the startup address properly.
 
-To build the image with the test application, just run `make Makefile` or `make rebuild Makefile`. If the build process is successful, the image file `image.bin` will be ready to boot.
+To build the image with the test application, just run `make -f Makefile` or `make rebuild -f Makefile`. If the build process is successful, the image file `image.bin` will be ready to boot.
 
 Run:
 
