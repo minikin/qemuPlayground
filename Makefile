@@ -21,6 +21,7 @@ CFLAGS = $(CPUFLAG) $(WFLAG)
 # Additional C compiler flags to produce debugging symbols
 DEB_FLAG = -g -DDEBUG
 
+
 # Compiler/target path in FreeRTOS/Source/portable
 PORT_COMP_TARG = GCC/ARM926EJ-S/
 
@@ -42,25 +43,16 @@ DRIVERS_SRC = drivers/
 # Directory with demo specific source (and header) files
 APP_SRC = Demo/
 
+
 # Object files to be linked into an application
 # Due to a large number, the .o files are arranged into logical groups:
 
 FREERTOS_OBJS = queue.o list.o tasks.o
 # The following o. files are only necessary if
 # certain options are enabled in FreeRTOSConfig.h
-FREERTOS_OBJS += timers.o
-FREERTOS_OBJS += croutine.o
-FREERTOS_OBJS += event_groups.o
-FREERTOS_OBJS += arp.o
-FREERTOS_OBJS += iptrace.o
-FREERTOS_OBJS += dhcp.o
-FREERTOS_OBJS += dns.o
-FREERTOS_OBJS += ip.o
-FREERTOS_OBJS += sockets.o
-FREERTOS_OBJS += stream_buffer.o
-FREERTOS_OBJS += tcp_ip.o
-FREERTOS_OBJS += udp_ip.o
-FREERTOS_OBJS += mqtt.o
+#FREERTOS_OBJS += timers.o
+#FREERTOS_OBJS += croutine.o
+#FREERTOS_OBJS += event_groups.o
 
 # Only one memory management .o file must be uncommented!
 FREERTOS_MEMMANG_OBJS = heap_1.o
@@ -76,6 +68,7 @@ DRIVERS_OBJS = timer.o interrupt.o uart.o
 APP_OBJS = init.o main.o print.o receive.o
 # nostdlib.o must be commented out if standard lib is going to be linked!
 APP_OBJS += nostdlib.o
+
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
@@ -149,38 +142,6 @@ $(OBJDIR)event_groups.o : $(FREERTOS_SRC)event_groups.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 
-#	 FreeRTOS plus
-
-$(OBJDIR)arp.o : $(FREERTOS_SRC)FreeRTOS_ARP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)iptrace.o : $(FREERTOS_SRC)DemoIPTrace.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)dhcp.o : $(FREERTOS_SRC)FreeRTOS_DHCP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)dns.o : $(FREERTOS_SRC)FreeRTOS_DNS.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)ip.o : $(FREERTOS_SRC)FreeRTOS_IP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)sockets.o : $(FREERTOS_SRC)FreeRTOS_SocketsP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)stream_buffer.o : $(FREERTOS_SRC)FreeRTOS_Stream_Buffer.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)tcp_ip.o : $(FREERTOS_SRC)FreeRTOS_TCP_IP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)udp_ip.o : $(FREERTOS_SRC)FreeRTOS_UDP_IP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)mqtt.o : $(FREERTOS_SRC)MQTTFreeRTOS.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
 # HW specific part, in FreeRTOS/Source/portable/$(PORT_COMP_TARGET)
 
 $(OBJDIR)port.o : $(FREERTOS_PORT_SRC)port.c
@@ -236,6 +197,7 @@ $(OBJDIR)receive.o : $(APP_SRC)receive.c $(DEP_BSP)
 
 $(OBJDIR)nostdlib.o : $(APP_SRC)nostdlib.c
 	$(CC) $(CFLAG) $(CFLAGS) $< $(OFLAG) $@
+
 
 # Cleanup directives:
 
