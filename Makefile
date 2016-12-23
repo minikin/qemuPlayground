@@ -42,7 +42,6 @@ DRIVERS_SRC = drivers/ARM926ejs/
 # Directory with demo specific source (and header) files
 APP_SRC = Demo/
 
-
 # Object files to be linked into an application
 # Due to a large number, the .o files are arranged into logical groups:
 
@@ -139,7 +138,6 @@ $(OBJDIR)croutine.o : $(FREERTOS_SRC)croutine.c
 
 $(OBJDIR)event_groups.o : $(FREERTOS_SRC)event_groups.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
 
 # HW specific part, in FreeRTOS/Source/portable/$(PORT_COMP_TARGET)
 
