@@ -1,20 +1,18 @@
 /*
- * FreeRTOS+TCP Labs Build 160919 (C) 2016 Real Time Engineers ltd.
+ * FreeRTOS+TCP Labs Build 150406 (C) 2015 Real Time Engineers ltd.
  * Authors include Hein Tibosch and Richard Barry
  *
  *******************************************************************************
  ***** NOTE ******* NOTE ******* NOTE ******* NOTE ******* NOTE ******* NOTE ***
  ***                                                                         ***
  ***                                                                         ***
- ***   FREERTOS+TCP IS STILL IN THE LAB (mainly because the FTP and HTTP     ***
- ***   demos have a dependency on FreeRTOS+FAT, which is only in the Labs    ***
- ***   download):                                                            ***
+ ***   FREERTOS+TCP IS STILL IN THE LAB:                                     ***
  ***                                                                         ***
- ***   FreeRTOS+TCP is functional and has been used in commercial products   ***
- ***   for some time.  Be aware however that we are still refining its       ***
- ***   design, the source code does not yet quite conform to the strict      ***
- ***   coding and style standards mandated by Real Time Engineers ltd., and  ***
- ***   the documentation and testing is not necessarily complete.            ***
+ ***   This product is functional and is already being used in commercial    ***
+ ***   products.  Be aware however that we are still refining its design,    ***
+ ***   the source code does not yet fully conform to the strict coding and   ***
+ ***   style standards mandated by Real Time Engineers ltd., and the         ***
+ ***   documentation and testing is not necessarily complete.                ***
  ***                                                                         ***
  ***   PLEASE REPORT EXPERIENCES USING THE SUPPORT RESOURCES FOUND ON THE    ***
  ***   URL: http://www.FreeRTOS.org/contact  Active early adopters may, at   ***
@@ -25,20 +23,16 @@
  ***** NOTE ******* NOTE ******* NOTE ******* NOTE ******* NOTE ******* NOTE ***
  *******************************************************************************
  *
- * FreeRTOS+TCP can be used under two different free open source licenses.  The
- * license that applies is dependent on the processor on which FreeRTOS+TCP is
- * executed, as follows:
- *
- * If FreeRTOS+TCP is executed on one of the processors listed under the Special
- * License Arrangements heading of the FreeRTOS+TCP license information web
- * page, then it can be used under the terms of the FreeRTOS Open Source
- * License.  If FreeRTOS+TCP is used on any other processor, then it can be used
- * under the terms of the GNU General Public License V2.  Links to the relevant
- * licenses follow:
- *
- * The FreeRTOS+TCP License Information Page: http://www.FreeRTOS.org/tcp_license
- * The FreeRTOS Open Source License: http://www.FreeRTOS.org/license
- * The GNU General Public License Version 2: http://www.FreeRTOS.org/gpl-2.0.txt
+ * - Open source licensing -
+ * While FreeRTOS+TCP is in the lab it is provided only under version two of the
+ * GNU General Public License (GPL) (which is different to the standard FreeRTOS
+ * license).  FreeRTOS+TCP is free to download, use and distribute under the
+ * terms of that license provided the copyright notice and this text are not
+ * altered or removed from the source files.  The GPL V2 text is available on
+ * the gnu.org web site, and on the following
+ * URL: http://www.FreeRTOS.org/gpl-2.0.txt.  Active early adopters may, and
+ * solely at the discretion of Real Time Engineers Ltd., be offered versions
+ * under a license other then the GPL.
  *
  * FreeRTOS+TCP is distributed in the hope that it will be useful.  You cannot
  * use FreeRTOS+TCP unless you agree that you use the software 'as is'.
@@ -63,24 +57,24 @@
 #ifndef	FREERTOS_TCP_WIN_H
 #define	FREERTOS_TCP_WIN_H
 
-#ifdef __cplusplus
+#ifdef	__cplusplus
 extern "C" {
 #endif
 
 extern BaseType_t xTCPWindowLoggingLevel;
 
-typedef struct xTCPTimer
+typedef struct _STcpTimer
 {
 	uint32_t ulBorn;
-} TCPTimer_t;
+} TcpTimer_t;
 
 typedef struct xTCP_SEGMENT
 {
 	uint32_t ulSequenceNumber;		/* The sequence number of the first byte in this packet */
-	int32_t lMaxLength;				/* Maximum space, number of bytes which can be stored in this segment */
+	int32_t lMaxLength;			/* Maximum space, number of bytes which can be stored in this segment */
 	int32_t lDataLength;			/* Actual number of bytes */
 	int32_t lStreamPos;				/* reference to the [t|r]xStream of the socket */
-	TCPTimer_t xTransmitTimer;		/* saves a timestamp at the moment this segment gets transmitted (TX only) */
+	TcpTimer_t xTransmitTimer;		/* saves a timestamp at the moment this segment gets transmitted (TX only) */
 	union
 	{
 		struct
@@ -104,25 +98,17 @@ typedef struct xTCP_WINSIZE
 {
 	uint32_t ulRxWindowLength;
 	uint32_t ulTxWindowLength;
-} TCPWinSize_t;
+} xTcpWinSize_t;
 
 /*
  * If TCP time-stamps are being used, they will occupy 12 bytes in
  * each packet, and thus the message space will become smaller
  */
 /* Keep this as a multiple of 4 */
-#if( ipconfigUSE_TCP_WIN == 1 )
-	#if( ipconfigUSE_TCP_TIMESTAMPS == 1 )
-		#define ipSIZE_TCP_OPTIONS	( 16u + 12u )
-	#else
-		#define ipSIZE_TCP_OPTIONS	16u
-	#endif
+#if	ipconfigUSE_TCP_TIMESTAMPS == 1
+#	define ipSIZE_TCP_OPTIONS   (12+12)
 #else
-	#if	ipconfigUSE_TCP_TIMESTAMPS == 1
-		#define ipSIZE_TCP_OPTIONS   ( 12u + 12u )
-	#else
-		#define ipSIZE_TCP_OPTIONS   12u
-	#endif
+#	define ipSIZE_TCP_OPTIONS   12
 #endif
 
 /*
@@ -142,7 +128,7 @@ typedef struct xTCP_WINDOW
 		} bits;						/* party which opens the connection */
 		uint32_t ulFlags;
 	} u;
-	TCPWinSize_t xSize;
+	xTcpWinSize_t xSize;
 	struct
 	{
 		uint32_t ulFirstSequenceNumber;	 /* Logging & debug: the first segment received/sent in this connection
@@ -187,7 +173,7 @@ typedef struct xTCP_WINDOW
  *=============================================================================*/
 
 /* Create and initialize a window */
-void vTCPWindowCreate( TCPWindow_t *pxWindow, uint32_t ulRxWindowLength,
+void vTCPWindowCreate( TCPWindow_t *pxWindow, uint32_t xRxWindowLength,
 	uint32_t ulTxWindowLength, uint32_t ulAckNumber, uint32_t ulSequenceNumber, uint32_t ulMSS );
 
 /* Destroy a window (always returns NULL)
@@ -246,7 +232,7 @@ uint32_t ulTCPWindowTxAck( TCPWindow_t *pxWindow, uint32_t ulSequenceNumber );
 uint32_t ulTCPWindowTxSack( TCPWindow_t *pxWindow, uint32_t ulFirst, uint32_t ulLast );
 
 
-#ifdef __cplusplus
+#ifdef	__cplusplus
 }	/* extern "C" */
 #endif
 

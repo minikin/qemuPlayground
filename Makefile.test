@@ -14,7 +14,7 @@ AR = $(TOOLCHAIN)ar
 CFLAG = -c
 OFLAG = -o
 INCLUDEFLAG = -I
-# CPUFLAG = -mcpu=arm926ej-s
+CPUFLAG = -mcpu=arm926ej-s
 WFLAG = -Wall -Wextra -Werror
 CFLAGS = $(CPUFLAG) $(WFLAG)
 
@@ -22,7 +22,7 @@ CFLAGS = $(CPUFLAG) $(WFLAG)
 DEB_FLAG = -g -DDEBUG
 
 # Compiler/target path in FreeRTOS/Source/portable
-PORT_COMP_TARG = GCC/-----/
+PORT_COMP_TARG = GCC/ARM926EJ-S/
 
 # Intermediate directory for all *.o and other files:
 OBJDIR = obj/
@@ -36,14 +36,14 @@ FREERTOS_MEMMANG_SRC = $(FREERTOS_SRC)portable/MemMang/
 # Directory with platform specific source files
 FREERTOS_PORT_SRC = $(FREERTOS_SRC)portable/$(PORT_COMP_TARG)
 
-# Directory
-FREERTOS_NETWORK_DRIVER = $(FREERTOS_SRC)portable/NetworkInterface/STM32Fxx
-
 # Directory with buffer management source files
-FREERTOS_BUFFER_MANAGEMENT = $(FREERTOS_SRC)portable/BufferManagement
+FREERTOS_BUFFER_MANAGEMENT_SRC = $(FREERTOS_SRC)portable/BufferManagement/
+
+# Directory
+FREERTOS_NETWORK_DRIVER = $(FREERTOS_SRC)portable/NetworkInterface/??????
 
 # Directory with HW drivers' source files
-DRIVERS_SRC = drivers/STM32F4xx
+DRIVERS_SRC = drivers/ARM926ejs/
 
 # Directory with demo specific source (and header) files
 APP_SRC = MQTT_DEMO/
@@ -57,15 +57,14 @@ FREERTOS_OBJS = queue.o list.o tasks.o
 FREERTOS_OBJS += timers.o
 FREERTOS_OBJS += croutine.o
 FREERTOS_OBJS += event_groups.o
+FREERTOS_OBJS += ip.o
 FREERTOS_OBJS += arp.o
-FREERTOS_OBJS += iptrace.o
 FREERTOS_OBJS += dhcp.o
 FREERTOS_OBJS += dns.o
-FREERTOS_OBJS += ip.o
 FREERTOS_OBJS += sockets.o
-FREERTOS_OBJS += stream_buffer.o
 FREERTOS_OBJS += tcp_ip.o
 FREERTOS_OBJS += udp_ip.o
+FREERTOS_OBJS += stream_buffer.o
 
 # Only one memory management .o file must be uncommented!
 #FREERTOS_MEMMANG_OBJS = heap_1.o
@@ -74,19 +73,22 @@ FREERTOS_OBJS += udp_ip.o
 FREERTOS_MEMMANG_OBJS = heap_4.o
 #FREERTOS_MEMMANG_OBJS = heap_5.o
 
+FREERTOS_BUFFER_MANAGEMENT_OBJS = buffer.o
+
 FREERTOS_PORT_OBJS = port.o portISR.o
 STARTUP_OBJ = startup.o
-DRIVERS_OBJS =
+DRIVERS_OBJS = timer.o interrupt.o uart.o
 
-APP_OBJS = main.o
+APP_OBJS = init.o main.o
 # nostdlib.o must be commented out if standard lib is going to be linked!
 APP_OBJS += nostdlib.o
 
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_BUFFER_MANAGEMENT_OBJS) $(FREERTOS_PORT_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
+#OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
-LINKER_SCRIPT = $(addprefix $(APP_SRC), stm32f4_flash.ld)
+LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
 ELF_IMAGE = image.elf
 TARGET = image.bin
 
@@ -99,8 +101,7 @@ INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG
 INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
 
 # Dependency on HW specific settings
-# DEP_BSP = $(INC_DRIVERS)bsp.h
-
+DEP_BSP = $(INC_DRIVERS)bsp.h
 
 #
 # Make rules:
@@ -126,10 +127,9 @@ debug_rebuild : _debug_flags rebuild
 _debug_flags :
 	$(eval CFLAGS += $(DEB_FLAG))
 
-
 # Startup code, implemented in assembler
 
-$(OBJDIR)startup.o : $(APP_SRC)system_stm32f4xx.c
+$(OBJDIR)startup.o : $(APP_SRC)startup.s
 	$(AS) $(CPUFLAG) $< $(OFLAG) $@
 
 # FreeRTOS core
@@ -152,12 +152,9 @@ $(OBJDIR)croutine.o : $(FREERTOS_SRC)croutine.c
 $(OBJDIR)event_groups.o : $(FREERTOS_SRC)event_groups.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
-# FreeRTOS +
+# FreeRTOS TCP IP Stack
 
 $(OBJDIR)arp.o : $(FREERTOS_SRC)FreeRTOS_ARP.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
-
-$(OBJDIR)iptrace.o : $(FREERTOS_SRC)DemoIPTrace.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 $(OBJDIR)dhcp.o : $(FREERTOS_SRC)FreeRTOS_DHCP.c
@@ -208,6 +205,11 @@ $(OBJDIR)heap_4.o : $(FREERTOS_MEMMANG_SRC)heap_4.c
 $(OBJDIR)heap_5.o : $(FREERTOS_MEMMANG_SRC)heap_5.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
+# Buffer
+
+$(OBJDIR)buffer.o : $(FREERTOS_BUFFER_MANAGEMENT_SRC)BufferAllocation_2.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+
 # Drivers
 
 $(OBJDIR)timer.o : $(DRIVERS_SRC)timer.c $(DEP_BSP)
@@ -223,6 +225,12 @@ $(OBJDIR)uart.o : $(DRIVERS_SRC)uart.c $(DEP_BSP)
 
 $(OBJDIR)main.o : $(APP_SRC)main.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+
+$(OBJDIR)init.o : $(APP_SRC)init.c $(DEP_BSP)
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+
+$(OBJDIR)nostdlib.o : $(APP_SRC)nostdlib.c
+	$(CC) $(CFLAG) $(CFLAGS) $< $(OFLAG) $@
 
 # Cleanup directives:
 
