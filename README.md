@@ -51,3 +51,10 @@ A convenience Bash script _start_qemu.sh_ is provided. If necessary, you may edi
 The demo application will run infinitely so it must be stopped manually by "killing" the instance of Qemu (an "equivalent" to switching off the board). A convenience Bash script _stop_qemu.sh_ (it must be run in another shell) is provided to automate the process. Note that it may not work properly if multiple instances of qemu-system-arm are running.
 
 For more details, see extensive comments in both scripts.
+
+#### MQTT
+
+To build freeRTOS  img with MQTT you nee to use `Malefile.mqtt` , unfortunately it is not possible to build img.
+at this moment:
+  - network interface driver not finished for selected chip yet,
+  - I'm not sure how properly include network driver to build
